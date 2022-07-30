@@ -29,6 +29,7 @@ class PrioritizedPlanningSolver(object):
         start_time = timer.time()
         result = []
         constraints = []
+        free_loc = self.get_free_loc()
 
         for i in range(self.num_of_agents):  # Find path for each agent
             path = a_star(self.my_map, self.starts[i], self.goals[i], self.heuristics[i],
@@ -44,7 +45,27 @@ class PrioritizedPlanningSolver(object):
             #            * self.num_of_agents has the number of total agents
             #            * constraints: array of constraints to consider for future A* searches
 
-
+                    # Adding an Edge Constraint , the agent i made the move from loc path[n-1]
+                    # to loc path[n] at timestep timesteps[n], thus it is an edge constraint for
+            for n in range(len(path)):
+                for j in range(i+1, self.num_of_agents):
+                    # Adding an Vertex Constraint
+                    constraints.append({'agent': j,
+                                    'loc': [path[n]],
+                                   'timestep': n})
+                    # Adding an Edge Constraint , the agent i made the move from loc path[n-1]
+                    # to loc path[n] at timestep timesteps[n], thus it is an edge constraint for
+                    # agent j
+                    if n > 0:
+                        constraints.append({'agent': j,
+                                            'loc': [path[n-1], path[n]],
+                                            'timestep': n})
+                    # Adding Future Constraints Due to Goal Reached by high priority agent
+                    if n == len(path) - 1:
+                        for future in range(free_loc + 1):
+                            constraints.append({'agent': j,
+                                                'loc': [path[n]],
+                                                'timestep': n + future})
             ##############################
 
         self.CPU_time = timer.time() - start_time
@@ -54,3 +75,11 @@ class PrioritizedPlanningSolver(object):
         print("Sum of costs:    {}".format(get_sum_of_cost(result)))
         print(result)
         return result
+
+    def get_free_loc(self):
+        free_loc = 0
+        for row in self.my_map:
+            for col in row:
+                if (col == False):
+                    free_loc += 1
+        return free_loc

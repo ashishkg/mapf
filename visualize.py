@@ -72,6 +72,7 @@ class Animation:
                                                  frames=int(self.T + 1) * 10,
                                                  interval=100,
                                                  blit=True)
+        #self.save("t3.gif", 0.1)
 
     def save(self, file_name, speed):
         self.animation.save(
@@ -127,3 +128,5 @@ class Animation:
             pos_next = np.array(path[int(t)])
             pos = (pos_next - pos_last) * (t - int(t)) + pos_last
             return pos
+
+

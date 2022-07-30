@@ -1,5 +1,5 @@
 #
-# Please insert this function into "cbs.py" before "class CBSSolver"
+# Please insert this function into "disjoint_splitting_cbs.py" before "class CBSSolver"
 # is defined.
 #
 

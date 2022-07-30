@@ -2,7 +2,8 @@
 import argparse
 import glob
 from pathlib import Path
-from cbs import CBSSolver
+from disjoint_splitting_cbs import CBSSolver
+from standard_cbs import StandardCBSSolver
 from independent import IndependentSolver
 from prioritized import PrioritizedPlanningSolver
 from visualize import Animation
@@ -22,6 +23,7 @@ def print_locations(my_map, locations):
     for i in range(len(locations)):
         starts_map[locations[i][0]][locations[i][1]] = i
     to_print = ''
+    print(len(my_map),len(my_map[0]) )
     for x in range(len(my_map)):
         for y in range(len(my_map[0])):
             if starts_map[x][y] >= 0:
@@ -55,6 +57,8 @@ def import_mapf_instance(filename):
             elif cell == '.':
                 my_map[-1].append(False)
     # #agents
+    print("inside")
+    print(len(my_map[0]))
     line = f.readline()
     num_agents = int(line)
     # #agents lines with the start/goal positions
@@ -95,6 +99,10 @@ if __name__ == '__main__':
             print("***Run CBS***")
             cbs = CBSSolver(my_map, starts, goals)
             paths = cbs.find_solution(args.disjoint)
+        elif args.solver == "SCBS":
+            print("***Run CBS***")
+            scbs = StandardCBSSolver(my_map, starts, goals)
+            paths = scbs.find_solution(args.disjoint)
         elif args.solver == "Independent":
             print("***Run Independent***")
             solver = IndependentSolver(my_map, starts, goals)
